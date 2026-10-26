@@ -54,6 +54,14 @@ def per_sample_mse(prediction: torch.Tensor, target: torch.Tensor) -> torch.Tens
     return F.mse_loss(prediction.float(), target.float(), reduction="none").flatten(1).mean(1)
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def forward_loss(components, latents: torch.Tensor, prompt: str, *, stage: str, beta: float,
                  lambda_reject: float, noise_seed: int):
     model = components.model
@@ -111,7 +119,8 @@ def forward_loss(components, latents: torch.Tensor, prompt: str, *, stage: str, 
 
 
 def save_checkpoint(run_dir: Path, components, optimizer, scheduler, *, epoch: int,
-                    next_position: int, updates: int, selected_hash: str, final: bool) -> None:
+                    next_position: int, updates: int, selected_hash: str,
+                    config_hash: str, final: bool) -> None:
     target = run_dir / ("final" if final else "last")
     target.mkdir(parents=True, exist_ok=True)
     components.model.unet.save_pretrained(target / "adapter", safe_serialization=True)
@@ -123,6 +132,7 @@ def save_checkpoint(run_dir: Path, components, optimizer, scheduler, *, epoch: i
             "next_position": next_position,
             "updates": updates,
             "selected_hash": selected_hash,
+            "config_hash": config_hash,
         },
         target / "state.pt",
     )
@@ -157,6 +167,7 @@ def main() -> None:
 
     rows = read_rows(Path(config["train_manifest"]), limit=config.get("train_limit"), seed=seed)
     selected_hash = hashlib.sha256("\n".join(sorted(row["id"] for row in rows)).encode()).hexdigest()
+    config_hash = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     source_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     metadata = {
@@ -165,12 +176,21 @@ def main() -> None:
         "train_manifest_sha256": hashlib.sha256(Path(config["train_manifest"]).read_bytes()).hexdigest(),
         "source_git_sha": source_sha,
         "init": str(args.init) if args.init else None,
+        "init_adapter_sha256": sha256_file(args.init / "adapter" / "adapter_model.safetensors") if args.init else None,
         "gpu": torch.cuda.get_device_name(0),
         "torch": torch.__version__,
         "cuda": torch.version.cuda,
         "started_at_unix": time.time(),
     }
-    (args.output_dir / "run.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n")
+    run_path = args.output_dir / "run.json"
+    if args.resume:
+        original = json.loads(run_path.read_text())
+        if original["config"] != config or original["selected_ids_sha256"] != selected_hash:
+            raise ValueError("resume run metadata mismatch")
+    else:
+        if run_path.exists():
+            raise FileExistsError(f"run metadata already exists: {run_path}")
+        run_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n")
 
     components = load_base_components(
         upstream_root=Path(config["upstream_root"]),
@@ -207,6 +227,8 @@ def main() -> None:
         state = torch.load(args.output_dir / "last" / "state.pt", map_location="cpu", weights_only=False)
         if state["selected_hash"] != selected_hash:
             raise ValueError("resume data selection mismatch")
+        if state["config_hash"] != config_hash:
+            raise ValueError("resume config mismatch")
         optimizer.load_state_dict(state["optimizer"])
         scheduler.load_state_dict(state["scheduler"])
         start_epoch, start_position, updates = state["epoch"], state["next_position"], state["updates"]
@@ -251,16 +273,19 @@ def main() -> None:
                 next_epoch, next_position = (epoch + 1, 0) if position + 1 == len(order) else (epoch, position + 1)
                 save_checkpoint(args.output_dir, components, optimizer, scheduler,
                                 epoch=next_epoch, next_position=next_position,
-                                updates=updates, selected_hash=selected_hash, final=False)
+                                updates=updates, selected_hash=selected_hash,
+                                config_hash=config_hash, final=False)
             if args.max_updates is not None and updates >= args.max_updates:
                 next_epoch, next_position = (epoch + 1, 0) if position + 1 == len(order) else (epoch, position + 1)
                 save_checkpoint(args.output_dir, components, optimizer, scheduler,
                                 epoch=next_epoch, next_position=next_position,
-                                updates=updates, selected_hash=selected_hash, final=True)
+                                updates=updates, selected_hash=selected_hash,
+                                config_hash=config_hash, final=True)
                 print(f"probe stopped at update {updates}/{total_updates}")
                 return
     save_checkpoint(args.output_dir, components, optimizer, scheduler, epoch=epochs,
-                    next_position=0, updates=updates, selected_hash=selected_hash, final=True)
+                    next_position=0, updates=updates, selected_hash=selected_hash,
+                    config_hash=config_hash, final=True)
     print(f"completed {updates}/{total_updates} optimizer updates")
 
 

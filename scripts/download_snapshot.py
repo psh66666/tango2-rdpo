@@ -99,28 +99,54 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("repo", choices=REPOS)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--write-plan", type=Path,
+                        help="Write short-lived resolved URLs for a server that cannot reach the HF API")
+    parser.add_argument("--plan", type=Path,
+                        help="Use a plan written on another machine instead of contacting the HF API")
     args = parser.parse_args()
+    if args.write_plan and args.plan:
+        parser.error("--write-plan and --plan are mutually exclusive")
     repo_type, repo_id, revision, include = REPOS[args.repo]
-    api_kind = "datasets" if repo_type == "dataset" else "models"
-    resolve_prefix = "datasets/" if repo_type == "dataset" else ""
-    url = f"https://huggingface.co/api/{api_kind}/{repo_id}/revision/{revision}?blobs=true"
-    with request(url) as response:
-        metadata = json.load(response)
-    if metadata["sha"] != revision:
-        raise RuntimeError("revision mismatch")
+    if args.plan:
+        plan = json.loads(args.plan.read_text())
+        if plan["repo"] != repo_id or plan["revision"] != revision:
+            raise RuntimeError("download plan does not match the pinned repository")
+        files = plan["files"]
+    else:
+        api_kind = "datasets" if repo_type == "dataset" else "models"
+        resolve_prefix = "datasets/" if repo_type == "dataset" else ""
+        url = f"https://huggingface.co/api/{api_kind}/{repo_id}/revision/{revision}?blobs=true"
+        with request(url) as response:
+            metadata = json.load(response)
+        if metadata["sha"] != revision:
+            raise RuntimeError("revision mismatch")
+        files = []
+        for item in sorted(
+            (x for x in metadata["siblings"] if include(x["rfilename"])),
+            key=lambda entry: entry["rfilename"],
+        ):
+            name = item["rfilename"]
+            file_url = f"https://huggingface.co/{resolve_prefix}{repo_id}/resolve/{revision}/{name}"
+            if args.write_plan:
+                with request(file_url, method="HEAD") as response:
+                    file_url = response.url
+            files.append({"name": name, "url": file_url, "size": item["size"],
+                          "sha256": item.get("lfs", {}).get("sha256")})
+        if args.write_plan:
+            args.write_plan.parent.mkdir(parents=True, exist_ok=True)
+            args.write_plan.write_text(json.dumps(
+                {"repo": repo_id, "revision": revision, "files": files}, indent=2
+            ) + "\n")
+            args.write_plan.chmod(0o600)
+            print(f"wrote {len(files)} expiring URLs to {args.write_plan}; do not commit this file")
+            return
     output = args.output_root / args.repo
     output.mkdir(parents=True, exist_ok=True)
     records = []
-    files = sorted(
-        (x for x in metadata["siblings"] if include(x["rfilename"])),
-        key=lambda item: item["rfilename"],
-    )
     for index, item in enumerate(files, 1):
-        name = item["rfilename"]
+        name = item["name"]
         print(f"[{index}/{len(files)}] {name}", flush=True)
-        file_url = f"https://huggingface.co/{resolve_prefix}{repo_id}/resolve/{revision}/{name}"
-        expected_sha = item.get("lfs", {}).get("sha256")
-        record = download_file(file_url, output / name, item["size"], expected_sha)
+        record = download_file(item["url"], output / name, item["size"], item["sha256"])
         record["repo_path"] = name
         print(f"  {record['status']} {record['bytes']} bytes {record['sha256']}", flush=True)
         records.append(record)
