@@ -1,0 +1,159 @@
+{
+  "audio_alpaca": {
+    "repo": "declare-lab/audio-alpaca",
+    "revision": "f41bb361536e53ba064ff5372c8057d4851a8523",
+    "files": [
+      {
+        "name": "README.md",
+        "bytes": 926,
+        "sha256": "1a3b01cc8c51de20219a4239afe1b0c217201fc2d0408cbabb7ac0ffd1cfc809"
+      },
+      {
+        "name": "data/train-00000-of-00020.parquet",
+        "bytes": 486154313,
+        "sha256": "5eecf5df559cb540da94ddc744141151607441153e071759650b0075c31f19ea"
+      },
+      {
+        "name": "data/train-00001-of-00020.parquet",
+        "bytes": 486185792,
+        "sha256": "2085db9b11a8be36f8760013db2f7d295e5fe1ac44d3367e6627ed4a97a3f156"
+      },
+      {
+        "name": "data/train-00002-of-00020.parquet",
+        "bytes": 485148581,
+        "sha256": "fdbb330ebcbe1a53f4de76de8bd6bba25b9006e4db83d02686ce9c0804b69cd7"
+      },
+      {
+        "name": "data/train-00003-of-00020.parquet",
+        "bytes": 484945877,
+        "sha256": "239123c3fb7715100889f524389ad6903c320f68d15a7c19ec42720f94d6089b"
+      },
+      {
+        "name": "data/train-00004-of-00020.parquet",
+        "bytes": 486290619,
+        "sha256": "fcfb24803867b1f4974e4930ed88011e860e428d9e52de99d745527261cbc263"
+      },
+      {
+        "name": "data/train-00005-of-00020.parquet",
+        "bytes": 485992350,
+        "sha256": "03253a2b371b68e22bcc52d6cd4c61bf02917cc640e4eb6838353b3dbd32b049"
+      },
+      {
+        "name": "data/train-00006-of-00020.parquet",
+        "bytes": 485362621,
+        "sha256": "2712868b1b1c2fc0648d5da0cff4958975d71066441bd969eb613b4d4e44a754"
+      },
+      {
+        "name": "data/train-00007-of-00020.parquet",
+        "bytes": 484993959,
+        "sha256": "41f9c5f8e2d4e80f778f5dbc91830336aeadbb7ec733cc8b338d2ecf4222ed2c"
+      },
+      {
+        "name": "data/train-00008-of-00020.parquet",
+        "bytes": 485990781,
+        "sha256": "92c0ac0576b7ab0d92c05ad132d52849926e073ec02fb16517bf1598fe245224"
+      },
+      {
+        "name": "data/train-00009-of-00020.parquet",
+        "bytes": 485315041,
+        "sha256": "0612de631a888ff0d6e9d5ee424a38386a58779fda34009eae6173a81f071e90"
+      },
+      {
+        "name": "data/train-00010-of-00020.parquet",
+        "bytes": 485294921,
+        "sha256": "6988388255ed80304530ceb9dd4bd60027204c5a3381281dc0bbdd6a99f6c5cc"
+      },
+      {
+        "name": "data/train-00011-of-00020.parquet",
+        "bytes": 485934416,
+        "sha256": "ce3fb52b4a0c574c154f6b2acd1e722334d9ad7316ba3dc9e956033f603c4e38"
+      },
+      {
+        "name": "data/train-00012-of-00020.parquet",
+        "bytes": 485151323,
+        "sha256": "c08980c5ca91214c424a28ee489502ac48c2d0064b0a0e37bf07adf07f202997"
+      },
+      {
+        "name": "data/train-00013-of-00020.parquet",
+        "bytes": 486137255,
+        "sha256": "fb8c2fb7392370c20095265e3cb668a28a9bf6f1d4d1cb55aeee3d98517c19dc"
+      },
+      {
+        "name": "data/train-00014-of-00020.parquet",
+        "bytes": 485515384,
+        "sha256": "5e8572a9a3a1ac8b44be9423aedc0a546f084acb24b04eb3135c0a8263d9f159"
+      },
+      {
+        "name": "data/train-00015-of-00020.parquet",
+        "bytes": 485283909,
+        "sha256": "df251486b17cb0f86a1a87f28c2eb93cfd3d4681b09437df7c3653c81d0bdfa5"
+      },
+      {
+        "name": "data/train-00016-of-00020.parquet",
+        "bytes": 485334528,
+        "sha256": "056251d2c8a2f3e292e2b245b2dac10463d5c8db6df8055239e09452e144ff7b"
+      },
+      {
+        "name": "data/train-00017-of-00020.parquet",
+        "bytes": 485339499,
+        "sha256": "097190e91dd0f805599478613afac3ed8db0578006df1d161f53b36ef5b0c1df"
+      },
+      {
+        "name": "data/train-00018-of-00020.parquet",
+        "bytes": 485035047,
+        "sha256": "dd646af87574338be92bf04f861b91e362229b69b22a4f0254f06958c3b30819"
+      },
+      {
+        "name": "data/train-00019-of-00020.parquet",
+        "bytes": 483459962,
+        "sha256": "95b07d8e38e7d95f949daa77c7f48515a9a9e23ed9618398b18ab181ec35d072"
+      }
+    ]
+  },
+  "tango_base": {
+    "repo": "declare-lab/tango-full-ft-audiocaps",
+    "revision": "bcdef43a7759667f436cc7444c2f5e7498654c60",
+    "files": [
+      {
+        "name": "README.md",
+        "bytes": 2995,
+        "sha256": "8496c6e91b8049d380df9fd9c1e8243bc2f9303b343b2bceba68237e69e888d0"
+      },
+      {
+        "name": "config.json",
+        "bytes": 207,
+        "sha256": "49ed8e6540fbab4de78055c978b780cc7e2d823ed51f557fe4c0d9a2b4f50237"
+      },
+      {
+        "name": "main_config.json",
+        "bytes": 207,
+        "sha256": "49ed8e6540fbab4de78055c978b780cc7e2d823ed51f557fe4c0d9a2b4f50237"
+      },
+      {
+        "name": "pytorch_model_main.bin",
+        "bytes": 4829066707,
+        "sha256": "504d6f148cf732349730b4406ffac59fb9f9f7d89a44f850702ff27c34cb3133"
+      },
+      {
+        "name": "pytorch_model_stft.bin",
+        "bytes": 8537803,
+        "sha256": "8674a4cc9755fafa48350bfa3412cf9b9a0d357d18289dbfd86f0fb34e1ca4db"
+      },
+      {
+        "name": "pytorch_model_vae.bin",
+        "bytes": 442713669,
+        "sha256": "7d49e1881f38bd4f4fcaaf1c56686c02fb15f75e80dec5f773ae235b2cf1b61b"
+      },
+      {
+        "name": "stft_config.json",
+        "bytes": 141,
+        "sha256": "6d2cbaa0392f4c1737ae8d1e2738970d09a334c38594e9abae911aa7e6b594a3"
+      },
+      {
+        "name": "vae_config.json",
+        "bytes": 326,
+        "sha256": "26a66602fc3de6a5e89e15efdc23dcdd26c0c614813cc66501966db62776b98a"
+      }
+    ]
+  }
+}
