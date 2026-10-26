@@ -1,0 +1,40 @@
+{"id":"challenge_001","category":"sequence","prompt":"A bicycle bell rings twice, then tires roll across wet pavement as a car passes in the distance."}
+{"id":"challenge_002","category":"sequence","prompt":"A glass bottle falls onto a wooden floor, rolls briefly, and finally clinks against a metal chair."}
+{"id":"challenge_003","category":"sequence","prompt":"A dog barks outside, a door opens, and footsteps move from the porch into a quiet room."}
+{"id":"challenge_004","category":"sequence","prompt":"A kettle begins to whistle, the stove clicks off, and water is poured into a ceramic cup."}
+{"id":"challenge_005","category":"sequence","prompt":"A train approaches with increasing wheel noise, sounds its horn, then recedes down the track."}
+{"id":"challenge_006","category":"sequence","prompt":"Rain starts lightly on a window, builds into a heavy shower, and fades while thunder rumbles far away."}
+{"id":"challenge_007","category":"sequence","prompt":"A person unlocks a car, closes the door, starts the engine, and drives away on gravel."}
+{"id":"challenge_008","category":"sequence","prompt":"A camera shutter clicks three times before a short burst of applause in a small room."}
+{"id":"challenge_009","category":"sequence","prompt":"A basketball bounces quickly, strikes the rim, and rolls slowly across an indoor court."}
+{"id":"challenge_010","category":"sequence","prompt":"A phone vibrates on a desk, stops, then a notification chime sounds and someone picks it up."}
+{"id":"challenge_011","category":"sequence","prompt":"A match is struck, a fire crackles for several seconds, and water hisses as the flames go out."}
+{"id":"challenge_012","category":"sequence","prompt":"A drawer slides open, keys jingle, and the drawer shuts with a dull thud."}
+{"id":"challenge_013","category":"sequence","prompt":"A motorboat idles near shore, accelerates, and its engine becomes quieter as it moves away."}
+{"id":"challenge_014","category":"sequence","prompt":"A paper bag crinkles, coins spill onto a table, and one coin spins before falling flat."}
+{"id":"challenge_015","category":"sequence","prompt":"A rooster crows at dawn, birds answer from trees, and a farm gate squeaks open."}
+{"id":"challenge_016","category":"sequence","prompt":"A hand dryer starts with a loud rush of air, runs steadily, and shuts off with a click."}
+{"id":"challenge_017","category":"sequence","prompt":"A zipper opens on a backpack, a book is pulled out, and pages are flipped rapidly."}
+{"id":"challenge_018","category":"sequence","prompt":"A skater glides over ice, slips with a scrape, then lands with a soft thump."}
+{"id":"challenge_019","category":"sequence","prompt":"A helicopter grows louder overhead, hovers briefly, then flies away into the distance."}
+{"id":"challenge_020","category":"sequence","prompt":"A doorbell chimes, footsteps approach, and an old wooden door creaks open."}
+{"id":"challenge_021","category":"overlap","prompt":"Steady rain falls on a metal roof while a distant dog barks and a bicycle bell rings nearby."}
+{"id":"challenge_022","category":"overlap","prompt":"A crowd talks in a cafe while dishes clatter and an espresso machine releases steam."}
+{"id":"challenge_023","category":"overlap","prompt":"Waves break on a rocky beach while gulls call and wind whistles through a fence."}
+{"id":"challenge_024","category":"overlap","prompt":"A lawn mower runs in the background while nearby crickets chirp and a gate squeaks."}
+{"id":"challenge_025","category":"overlap","prompt":"Traffic passes in the rain while a pedestrian crossing signal beeps and footsteps splash."}
+{"id":"challenge_026","category":"overlap","prompt":"A clock ticks in a quiet kitchen while a refrigerator hums and a tap drips irregularly."}
+{"id":"challenge_027","category":"overlap","prompt":"A horse trots along a dirt path while birds sing and a wagon wheel rattles."}
+{"id":"challenge_028","category":"overlap","prompt":"Wind shakes leaves in a forest while a stream flows and a woodpecker taps a tree."}
+{"id":"challenge_029","category":"overlap","prompt":"An electric drill buzzes indoors while someone hammers and faint voices carry from another room."}
+{"id":"challenge_030","category":"overlap","prompt":"A distant siren passes while children play and a skateboard rolls over rough concrete."}
+{"id":"challenge_031","category":"overlap","prompt":"A train rattles across a bridge while water flows underneath and birds call overhead."}
+{"id":"challenge_032","category":"overlap","prompt":"A cat purrs close to the microphone while rain taps a window and a clock ticks."}
+{"id":"challenge_033","category":"overlap","prompt":"A campfire crackles while an owl hoots and wind moves through tall grass."}
+{"id":"challenge_034","category":"overlap","prompt":"A vacuum cleaner hums while a television plays faintly and dishes rattle on a shelf."}
+{"id":"challenge_035","category":"overlap","prompt":"A subway announcement echoes while doors hiss and commuters shuffle on the platform."}
+{"id":"challenge_036","category":"overlap","prompt":"A horse neighs in a stable while rain falls outside and a bucket clatters."}
+{"id":"challenge_037","category":"overlap","prompt":"Footsteps crunch through snow while wind blows and a distant church bell rings."}
+{"id":"challenge_038","category":"overlap","prompt":"A boat rope creaks against a dock while waves lap and a seagull cries."}
+{"id":"challenge_039","category":"overlap","prompt":"A sewing machine runs while fabric rustles and a radio plays softly in the background."}
+{"id":"challenge_040","category":"overlap","prompt":"A delivery truck idles while packages slide across a ramp and a reverse alarm beeps."}

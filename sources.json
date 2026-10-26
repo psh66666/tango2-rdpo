@@ -1,0 +1,27 @@
+{
+  "upstream_tango": {
+    "url": "https://github.com/declare-lab/tango",
+    "commit": "34ecd38898508017ca937508a047b42817d2b070",
+    "license": "CC-BY-NC-ND-4.0",
+    "license_url": "https://github.com/declare-lab/tango/blob/master/LICENSE.md"
+  },
+  "audio_alpaca": {
+    "url": "https://huggingface.co/datasets/declare-lab/audio-alpaca",
+    "revision": "f41bb361536e53ba064ff5372c8057d4851a8523",
+    "license": "Apache-2.0"
+  },
+  "tango_base": {
+    "url": "https://huggingface.co/declare-lab/tango-full-ft-audiocaps",
+    "revision": "bcdef43a7759667f436cc7444c2f5e7498654c60",
+    "license": "CC-BY-NC-SA-4.0"
+  },
+  "text_encoder": {
+    "url": "https://huggingface.co/google/flan-t5-large",
+    "revision": "0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a"
+  },
+  "scheduler": {
+    "url": "https://huggingface.co/sd2-community/stable-diffusion-2-1/blob/bb2154823665391b4fb29b0b9cf82a198964ee05/scheduler/scheduler_config.json",
+    "revision": "bb2154823665391b4fb29b0b9cf82a198964ee05",
+    "note": "Public mirror of the Stable Diffusion 2.1 scheduler config used in place of the now restricted original path; verify its fields before GPU work."
+  }
+}

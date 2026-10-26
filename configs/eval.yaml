@@ -1,0 +1,14 @@
+precision: bf16
+upstream_root: /root/onethingai-fs/projects/tango2-rdpo/upstream/tango
+model_snapshot: /root/onethingai-fs/projects/tango2-rdpo/models/tango-base
+text_encoder: /root/onethingai-fs/cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a
+scheduler: /root/onethingai-fs/projects/tango2-rdpo/models/scheduler
+steps: 200
+guidance: 3.0
+seeds: [1200, 1201]
+models:
+  pretrained: null
+  sft: /root/onethingai-fs/projects/tango2-rdpo/runs/sft/final
+  baseline: /root/onethingai-fs/projects/tango2-rdpo/runs/baseline/final
+  regularized: /root/onethingai-fs/projects/tango2-rdpo/runs/regularized/final
+  ablation: /root/onethingai-fs/projects/tango2-rdpo/runs/ablation/final

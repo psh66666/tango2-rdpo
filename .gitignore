@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+models/
+upstream/
+runs/
+outputs/
+*.part
+.DS_Store

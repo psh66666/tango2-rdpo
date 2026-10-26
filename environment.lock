@@ -1,0 +1,16 @@
+# Observed on the existing OneThingAI Python 3.11 environment in CPU mode.
+# Torch is the instance's CUDA 12.1 build; install matching CUDA wheels on a new image.
+accelerate==0.34.2
+datasets==2.21.0
+diffusers==0.30.0
+einops==0.8.2
+huggingface-hub==0.36.2
+numpy==1.26.4
+peft==0.12.0
+pyarrow==17.0.0
+PyYAML==6.0.3
+safetensors==0.8.0
+soundfile==0.14.0
+torch==2.4.0
+torchaudio==2.4.0
+transformers==4.44.0
