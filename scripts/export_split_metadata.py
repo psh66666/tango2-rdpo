@@ -16,7 +16,7 @@ def main() -> None:
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     with (args.output_dir / "splits.csv").open("w", newline="") as stream:
-        writer = csv.writer(stream)
+        writer = csv.writer(stream, lineterminator="\n")
         writer.writerow(("id", "split", "strategy", "prompt_sha256", "chosen_sha256", "rejected_sha256"))
         for split in ("train", "val", "test"):
             with (args.manifest_dir / f"{split}.jsonl").open() as rows:

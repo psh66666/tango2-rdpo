@@ -1,0 +1,60 @@
+{
+  "dataset_revision": "f41bb361536e53ba064ff5372c8057d4851a8523",
+  "seed": 20261023,
+  "rows_accepted": 15025,
+  "rows_rejected": 0,
+  "split_counts": {
+    "train": 12019,
+    "val": 1504,
+    "test": 1502
+  },
+  "strategies": {
+    "strategy_3": 4752,
+    "strategy_2": 4544,
+    "strategy_1.1": 3004,
+    "strategy_1.2": 2725
+  },
+  "near_prompt_pairs_grouped": 368,
+  "manifest_sha256": {
+    "train": "2b2a0f44abde4afe8c0d7a77b1b41f87095598171622368de0168ce1d300f314",
+    "val": "754671575658f7d814ab1005b2814faca400a1845850458cd957bee72dd1604d",
+    "test": "f2c2b4cd3df0e4455badae17e60f51849e37172647f2ab239893fb76ce3267ad"
+  },
+  "leakage_audit": {
+    "split_counts": {
+      "train": {
+        "rows": 12019,
+        "strategies": {
+          "strategy_3": 3755,
+          "strategy_2": 3649,
+          "strategy_1.1": 2422,
+          "strategy_1.2": 2193
+        }
+      },
+      "val": {
+        "rows": 1504,
+        "strategies": {
+          "strategy_2": 483,
+          "strategy_1.1": 282,
+          "strategy_3": 487,
+          "strategy_1.2": 252
+        }
+      },
+      "test": {
+        "rows": 1502,
+        "strategies": {
+          "strategy_1.2": 280,
+          "strategy_2": 412,
+          "strategy_3": 510,
+          "strategy_1.1": 300
+        }
+      }
+    },
+    "exact_cross_split_leakage": 0,
+    "near_prompt_cross_split_leakage": 0,
+    "eval_prompt_count": 200,
+    "challenge_count": 40,
+    "challenge_near_duplicates": 0,
+    "examples": []
+  }
+}
