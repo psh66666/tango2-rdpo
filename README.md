@@ -38,6 +38,8 @@ python scripts/download_snapshot.py tango-base --output-root models \
 /root/miniconda3/envs/loopscape-py311/bin/python -m tango2_rdpo.audit_data \
   --manifest-dir data/processed/manifests \
   --challenge-manifest evaluation/challenge_prompts.jsonl
+/root/miniconda3/envs/loopscape-py311/bin/python scripts/export_split_metadata.py \
+  --manifest-dir data/processed/manifests --output-dir metadata
 /root/miniconda3/envs/loopscape-py311/bin/python -m compileall -q tango2_rdpo scripts
 ```
 
