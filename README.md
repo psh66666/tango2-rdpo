@@ -12,12 +12,21 @@
 
 远端持久盘根目录：`/root/onethingai-fs/projects/tango2-rdpo`。脚本、`models/`、`data/`、`runs/`、`outputs/` 均放这里；T5 缓存在同一持久盘的 `/root/onethingai-fs/cache/huggingface/hub`。`upstream/tango` 固定到 `34ecd38898508017ca937508a047b42817d2b070`。现有 Python 3.11 环境在 `/root/miniconda3/envs/loopscape-py311`，实际软件版本见 [`environment.lock`](environment.lock)。环境本身可能随实例重建，持久盘中的数据与代码不会依赖实例临时目录。
 
-服务器无法直接连 Hugging Face 时，在可访问的本机运行下面的下载器；它对 LFS 文件按来源 SHA-256 核验，支持断点续传，再把完整目录传到持久盘：
+服务器无法直接连 Hugging Face 页面时，在可访问的本机生成短时效文件地址，再将 `data/*download-plan.json` 传到远端同名目录；远端可直连文件 CDN。下载器对 LFS 文件按来源 SHA-256 核验并支持断点续传。下载计划含临时签名地址，文件权限为 `0600`，不要提交或公开：
 
 ```bash
-python scripts/download_snapshot.py audio-alpaca --output-root data/snapshots
-python scripts/download_snapshot.py tango-base --output-root data/snapshots
+python scripts/download_snapshot.py audio-alpaca --output-root data/snapshots \
+  --write-plan data/audio-alpaca-download-plan.json
+python scripts/download_snapshot.py tango-base --output-root models \
+  --write-plan data/tango-base-download-plan.json
+# 将两份计划及小型 README/JSON 配置文件复制到远端持久盘后：
+python scripts/download_snapshot.py audio-alpaca --output-root data/snapshots \
+  --plan data/audio-alpaca-download-plan.json --workers 4
+python scripts/download_snapshot.py tango-base --output-root models \
+  --plan data/tango-base-download-plan.json --workers 2
 ```
+
+官方配置指向 `stabilityai/stable-diffusion-2-1` 调度器；该路径目前无法匿名获取。本项目已将公开的 `sd2-community/stable-diffusion-2-1` 同类配置保存到 `models/scheduler/scheduler/scheduler_config.json`，使用前要在 GPU 探针时核对 1000 步、`scaled_linear`、`v_prediction` 等关键字段。这个来源替换须在报告中说明。
 
 ## 无卡阶段
 

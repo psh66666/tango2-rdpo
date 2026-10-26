@@ -8,6 +8,7 @@ persistent disk. No model or dataset files are committed to Git.
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import hashlib
 import json
 import time
@@ -57,14 +58,14 @@ def remote_size(url: str) -> int:
 def download_file(
     url: str, path: Path, expected_size: int, expected_sha: str | None, retries: int = 5
 ) -> dict:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and path.stat().st_size == expected_size:
+        actual_sha = sha256_file(path)
+        if expected_sha is None or actual_sha == expected_sha:
+            return {"path": str(path), "bytes": expected_size, "sha256": actual_sha, "status": "existing"}
     size = remote_size(url)
     if size != expected_size:
         raise IOError(f"API and file size disagree for {path.name}: {expected_size} vs {size}")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists() and path.stat().st_size == size:
-        actual_sha = sha256_file(path)
-        if expected_sha is None or actual_sha == expected_sha:
-            return {"path": str(path), "bytes": size, "sha256": actual_sha, "status": "existing"}
     part = path.with_name(path.name + ".part")
     for attempt in range(1, retries + 1):
         offset = part.stat().st_size if part.exists() else 0
@@ -103,6 +104,7 @@ def main() -> None:
                         help="Write short-lived resolved URLs for a server that cannot reach the HF API")
     parser.add_argument("--plan", type=Path,
                         help="Use a plan written on another machine instead of contacting the HF API")
+    parser.add_argument("--workers", type=int, default=1)
     args = parser.parse_args()
     if args.write_plan and args.plan:
         parser.error("--write-plan and --plan are mutually exclusive")
@@ -142,14 +144,20 @@ def main() -> None:
             return
     output = args.output_root / args.repo
     output.mkdir(parents=True, exist_ok=True)
-    records = []
-    for index, item in enumerate(files, 1):
+    if args.workers < 1 or args.workers > 8:
+        parser.error("--workers must be between 1 and 8")
+
+    def fetch(index_and_item: tuple[int, dict]) -> dict:
+        index, item = index_and_item
         name = item["name"]
-        print(f"[{index}/{len(files)}] {name}", flush=True)
         record = download_file(item["url"], output / name, item["size"], item["sha256"])
         record["repo_path"] = name
-        print(f"  {record['status']} {record['bytes']} bytes {record['sha256']}", flush=True)
-        records.append(record)
+        print(f"[{index}/{len(files)}] {name}: {record['status']} {record['bytes']} bytes {record['sha256']}", flush=True)
+        return record
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = [pool.submit(fetch, pair) for pair in enumerate(files, 1)]
+        records = [future.result() for future in futures]
     manifest = {"repo_type": repo_type, "repo": repo_id, "revision": revision, "files": records}
     (output / "snapshot_manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
