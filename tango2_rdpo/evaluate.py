@@ -6,7 +6,7 @@ import argparse
 import csv
 import json
 import random
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
@@ -37,7 +37,10 @@ def main() -> None:
     args = parser.parse_args()
     key = json.loads(args.answer_key.read_text())
     scores = {"alignment": defaultdict(list), "naturalness": defaultdict(list)}
+    choice_counts = {"alignment": Counter(), "naturalness": Counter()}
     seen = set()
+    raters = set()
+    rated_pairs = set()
     with args.ratings.open(newline="") as stream:
         for row in csv.DictReader(stream):
             rater, pair_id = row["rater_id"].strip(), row["pair_id"].strip()
@@ -46,6 +49,8 @@ def main() -> None:
             if (rater, pair_id) in seen:
                 raise ValueError(f"duplicate rating for {rater}, {pair_id}")
             seen.add((rater, pair_id))
+            raters.add(rater)
+            rated_pairs.add(pair_id)
             for question, column in (("alignment", "alignment_choice"), ("naturalness", "naturalness_choice")):
                 choice = row[column].strip().upper()
                 if choice not in {"L", "R", "T"}:
@@ -53,8 +58,14 @@ def main() -> None:
                 improved_side = "L" if key[pair_id]["left_model"] == "regularized" else "R"
                 score = 0.5 if choice == "T" else float(choice == improved_side)
                 scores[question][key[pair_id]["prompt_id"]].append(score)
+                choice_counts[question]["tie" if choice == "T" else ("regularized_win" if score == 1.0 else "baseline_win")] += 1
     result = {question: summarize(values, seed=args.seed) for question, values in scores.items()}
+    for question, counts in choice_counts.items():
+        result[question]["raw_counts"] = dict(counts)
     result["rating_count"] = len(seen)
+    result["rater_count"] = len(raters)
+    result["rated_pair_count"] = len(rated_pairs)
+    result["prepared_pair_count"] = len(key)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps(result, ensure_ascii=False, indent=2))
