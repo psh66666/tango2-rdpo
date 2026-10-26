@@ -57,9 +57,11 @@ python scripts/download_snapshot.py tango-base --output-root models \
 先在 GPU 实例确认 CUDA 可用、持久盘挂载、模型能加载。一个 24 GiB 级单卡是**待实测候选**，目前没有显存或速度保证；先跑 2 步再跑 100 步探针，确定 bf16、LoRA 和训练预算。以下全部在远端项目根目录运行：
 
 ```bash
-python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 2 --output-dir runs/probe_sft
+python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 2 --output-dir runs/probe_sft_2
+python -m tango2_rdpo.train --config configs/dpo_baseline.yaml --init runs/probe_sft_2/final --max-updates 2 --output-dir runs/probe_dpo_2
+python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 100 --output-dir runs/probe_sft_100
+python -m tango2_rdpo.train --config configs/dpo_baseline.yaml --init runs/probe_sft_100/final --max-updates 100 --output-dir runs/probe_dpo_100
 python -m tango2_rdpo.train --config configs/sft.yaml --output-dir runs/sft
-python -m tango2_rdpo.train --config configs/dpo_baseline.yaml --init runs/sft/final --max-updates 2 --output-dir runs/probe_dpo
 python -m tango2_rdpo.train --config configs/dpo_baseline.yaml --init runs/sft/final --output-dir runs/baseline
 python -m tango2_rdpo.train --config configs/dpo_regularized.yaml --init runs/sft/final --output-dir runs/regularized
 python -m tango2_rdpo.train --config configs/dpo_ablation.yaml --init runs/sft/final --output-dir runs/ablation
