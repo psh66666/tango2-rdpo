@@ -47,7 +47,9 @@ def audio_latents(row: dict, *, components, device: torch.device, stage: str, se
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
         posterior = components.vae.encode_first_stage(mel)
-        return components.vae.get_first_stage_encoding(posterior)
+        latents = components.vae.get_first_stage_encoding(posterior)
+        # Upstream posterior sampling uses float32 noise even with a bf16 VAE.
+        return latents.to(dtype=next(components.model.unet.parameters()).dtype)
 
 
 def per_sample_mse(prediction: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
