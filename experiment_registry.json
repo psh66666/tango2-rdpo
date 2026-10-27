@@ -79,6 +79,6 @@
     "regularized_probe_seconds_per_update": 1.2683,
     "ablation_probe_seconds_per_update": 1.3124,
     "estimated_training_gpu_hours_excluding_loading_validation_and_generation": 3.09,
-    "gpu_hourly_price": null
+    "gpu_hourly_price": 2
   }
 }

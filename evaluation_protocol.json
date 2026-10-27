@@ -1,0 +1,39 @@
+{
+  "status": "locked_before_test_evaluation",
+  "locked_date": "2026-10-27",
+  "training_source_git_sha": "7788161c22c1f63c192251f59234cae810d78f38",
+  "checkpoint_rule": "Use the final checkpoint after the fixed training budget for every branch; do not select a checkpoint on test results.",
+  "test_manifest_sha256": "f2c2b4cd3df0e4455badae17e60f51849e37172647f2ab239893fb76ce3267ad",
+  "generation_prompt_manifest_sha256": "3a529a71fb0103dd464e604ddb7d5237f662ade87a2ef1ef6bd0ec8d330952dc",
+  "generation_config_sha256": "5df1685fea9f21f23a4d05abf95321291b58c54376d5ae7114b363ea09345463",
+  "generation_prompt_count": 200,
+  "generation_models": ["pretrained", "sft", "baseline", "regularized", "ablation"],
+  "generation_seeds": [1200],
+  "generation_steps": 200,
+  "guidance": 3.0,
+  "test_diagnostic": {
+    "pairs": 200,
+    "selection": "diagnose.py --limit 200 on the frozen test manifest, sorted by SHA-256(seed:id)",
+    "selection_seed": 20261023,
+    "noise_seeds": [1101, 2202, 3303]
+  },
+  "blind_listening": {
+    "pair_count": 100,
+    "distinct_prompt_ids": true,
+    "models": ["baseline", "regularized"],
+    "selection_seed": 20261023,
+    "minimum_raters": 3,
+    "questions": ["text_alignment", "naturalness"],
+    "choices": ["left", "right", "tie"],
+    "analysis_unit": "prompt_id"
+  },
+  "external_challenge": {
+    "prompt_manifest_sha256": "7dc79e106f9a02d4e61fd30d5264862e385928ef6519959900e5f3f31f636234",
+    "prompt_count": 40,
+    "models": ["baseline", "regularized"],
+    "seeds": [1200],
+    "steps": 200,
+    "purpose": "Event coverage and order analysis, reported separately from the main blind test"
+  },
+  "gpu_hourly_price_cny": 2
+}

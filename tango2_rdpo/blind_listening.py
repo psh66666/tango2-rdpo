@@ -25,9 +25,17 @@ def main() -> None:
         pairs[(item["id"], item["seed"])][item["model"]] = item
     candidates = [key for key, value in pairs.items() if "baseline" in value and "regularized" in value]
     candidates.sort(key=lambda key: hashlib.sha256(f"{args.seed}:{key}".encode()).hexdigest())
-    selected = candidates[: args.count]
+    selected = []
+    seen_prompts = set()
+    for key in candidates:
+        if key[0] in seen_prompts:
+            continue
+        selected.append(key)
+        seen_prompts.add(key[0])
+        if len(selected) == args.count:
+            break
     if len(selected) < args.count:
-        raise ValueError(f"only {len(selected)} complete B/I pairs are available")
+        raise ValueError(f"only {len(selected)} distinct prompts with complete B/I pairs are available")
     public = args.output_dir / "participant"
     private = args.output_dir / "private"
     audio_dir = public / "audio"

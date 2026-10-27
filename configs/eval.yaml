@@ -5,7 +5,7 @@ text_encoder: /root/onethingai-fs/cache/huggingface/hub/models--google--flan-t5-
 scheduler: /root/onethingai-fs/projects/tango2-rdpo/models/scheduler
 steps: 200
 guidance: 3.0
-seeds: [1200, 1201]
+seeds: [1200]
 models:
   pretrained: null
   sft: /root/onethingai-fs/projects/tango2-rdpo/runs/sft/final
