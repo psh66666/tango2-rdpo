@@ -2,7 +2,7 @@
 
 本仓库研究一个可证伪的问题：Tango 2 的相对 DPO 目标可能让劣选音频的去噪误差低于冻结参考模型。我们在原 DPO 上加一个只对该现象起作用的平方铰链约束，比较共同 SFT 起点后的原版 DPO、改进版和约束强度消融。误差是拟合代理量，不是精确生成概率。正式效果要靠保留提示词的匿名盲听判断。
 
-**状态：前期准备。** 数据、模型、脚本和环境正在锁定；尚未使用 GPU，所有超参数都是探针起点，没有训练结果。
+**状态：GPU 环境预检完成，尚未运行训练探针。** 数据、模型、脚本和环境已锁定；所有超参数仍是探针起点，没有训练结果。
 
 ## 来源和许可
 
@@ -54,9 +54,11 @@ python scripts/download_snapshot.py tango-base --output-root models \
 
 ## 开卡后的实验顺序
 
-先在 GPU 实例确认 CUDA 可用、持久盘挂载、模型能加载。一个 24 GiB 级单卡是**待实测候选**，目前没有显存或速度保证；先跑 2 步再跑 100 步探针，确定 bf16、LoRA 和训练预算。以下全部在远端项目根目录运行：
+2026-10-27 已确认 RTX 4090 24 GiB 可见、bf16 可用、持久盘已挂载且剩余约 190 GiB；配置路径与调度器字段通过静态检查。**尚未加载模型或实测训练显存和速度。**先跑 2 步再跑 100 步探针，确定 bf16、LoRA 和训练预算。以下全部在远端项目根目录，并使用锁定的 Python 环境运行：
 
 ```bash
+cd /root/onethingai-fs/projects/tango2-rdpo
+export PATH=/root/miniconda3/envs/loopscape-py311/bin:$PATH
 python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 2 --output-dir runs/probe_sft_2
 python -m tango2_rdpo.train --config configs/dpo_baseline.yaml --init runs/probe_sft_2/final --max-updates 2 --output-dir runs/probe_dpo_2
 python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 100 --output-dir runs/probe_sft_100
