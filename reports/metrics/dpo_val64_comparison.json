@@ -1,0 +1,108 @@
+{
+  "manifest_sha256": "754671575658f7d814ab1005b2814faca400a1845850458cd957bee72dd1604d",
+  "prompt_count": 64,
+  "noise_seeds": [
+    1101,
+    2202,
+    3303
+  ],
+  "models": {
+    "baseline": {
+      "preference_correct": 0.7864583333333334,
+      "rejected_proxy_increase_rate": 0.20833333333333334,
+      "chosen_delta": -0.00018627910564343134,
+      "rejected_delta": 0.0018806862644851208,
+      "margin": 2.066965214908123
+    },
+    "regularized": {
+      "preference_correct": 0.7916666666666666,
+      "rejected_proxy_increase_rate": 0.020833333333333332,
+      "chosen_delta": 0.001869253193338712,
+      "rejected_delta": 0.004120144993066788,
+      "margin": 2.2508919512232146
+    },
+    "ablation": {
+      "preference_correct": 0.796875,
+      "rejected_proxy_increase_rate": 0.010416666666666666,
+      "chosen_delta": 0.0021552052348852158,
+      "rejected_delta": 0.004453705158084631,
+      "margin": 2.2985002299149833
+    }
+  },
+  "paired_difference_vs_baseline": {
+    "regularized": {
+      "preference_correct": {
+        "mean": 0.005208333333333335,
+        "bootstrap_95_percent_ci": [
+          -0.031249999999999997,
+          0.03645833333333333
+        ]
+      },
+      "rejected_proxy_increase_rate": {
+        "mean": -0.1875,
+        "bootstrap_95_percent_ci": [
+          -0.2604166666666667,
+          -0.12499999999999996
+        ]
+      },
+      "chosen_delta": {
+        "mean": 0.002055532298982144,
+        "bootstrap_95_percent_ci": [
+          0.0019201803952455525,
+          0.002194935455918313
+        ]
+      },
+      "rejected_delta": {
+        "mean": 0.002239458728581667,
+        "bootstrap_95_percent_ci": [
+          0.002096369241674741,
+          0.002394921611994506
+        ]
+      },
+      "margin": {
+        "mean": 0.18392673631509146,
+        "bootstrap_95_percent_ci": [
+          0.06347800667087238,
+          0.29906707753737755
+        ]
+      }
+    },
+    "ablation": {
+      "preference_correct": {
+        "mean": 0.010416666666666668,
+        "bootstrap_95_percent_ci": [
+          -0.026041666666666664,
+          0.046875
+        ]
+      },
+      "rejected_proxy_increase_rate": {
+        "mean": -0.19791666666666666,
+        "bootstrap_95_percent_ci": [
+          -0.2708333333333333,
+          -0.13020833333333331
+        ]
+      },
+      "chosen_delta": {
+        "mean": 0.002341484340528647,
+        "bootstrap_95_percent_ci": [
+          0.0021899743005633354,
+          0.002499878406524658
+        ]
+      },
+      "rejected_delta": {
+        "mean": 0.00257301889359951,
+        "bootstrap_95_percent_ci": [
+          0.0024054832756519326,
+          0.0027525691936413446
+        ]
+      },
+      "margin": {
+        "mean": 0.23153501500686013,
+        "bootstrap_95_percent_ci": [
+          0.09449339037140211,
+          0.3639842967192332
+        ]
+      }
+    }
+  }
+}

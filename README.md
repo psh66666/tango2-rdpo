@@ -2,7 +2,7 @@
 
 本仓库研究一个可证伪的问题：Tango 2 的相对 DPO 目标可能让劣选音频的去噪误差低于冻结参考模型。我们在原 DPO 上加一个只对该现象起作用的平方铰链约束，比较共同 SFT 起点后的原版 DPO、改进版和约束强度消融。误差是拟合代理量，不是精确生成概率。正式效果要靠保留提示词的匿名盲听判断。
 
-**状态：GPU 探针与验证集选参完成，正式训练尚未开始。** 正式预算与配置冻结在 [`experiment_registry.json`](experiment_registry.json)；目前的指标只来自小规模探针，不代表最终生成质量。
+**状态：共同 SFT 与 B/I/A 三组正式训练、固定测试集机制诊断已完成；统一音频生成与人耳盲听尚未完成。** 正式预算与配置见 [`experiment_registry.json`](experiment_registry.json)，测试协议见 [`evaluation_protocol.json`](evaluation_protocol.json)。机制指标不能代替生成音质或真实听评。
 
 ## 来源和许可
 
@@ -77,6 +77,8 @@ python -m tango2_rdpo.train --config configs/dpo_ablation.yaml --init runs/sft/f
 ```
 
 正式训练采用已锁定的 5000 对：SFT 学习率 `1e-5`、1 轮；B/I/A 的 DPO 学习率均为 `5e-5`、2 轮，`lambda_reject` 分别为 0、0.1、0.3。其余 DPO 字段相同，均从同一 `runs/sft/final` adapter 出发。选参只用了固定验证子集，未使用测试集；选择依据和较好音频代理量的取舍见 [实验注册表](experiment_registry.json)。最终效果仍需匿名盲听。
+
+正式训练均按预算完成：SFT 1250 步，B/I/A 各 2500 步；同一 SFT 起点与训练源码提交 `7788161` 经运行状态核对。四组日志内训练时间合计 11634.07 秒（3.23 GPU 小时），按 2 元/小时约 6.46 元；模型加载、诊断、生成和探针另计。固定测试集 200 个偏好对、每对三组噪声上，I 相对 B 的劣选拟合代理风险由 22.67% 降至 5.00%，但较好音频的去噪误差增加 0.00212；[完整配对统计与区间](reports/metrics/dpo_test200_comparison.json)已保留。这个取舍是否改善实际音频，仍待匿名听评。
 
 固定验证或测试偏好对的机制检查：
 

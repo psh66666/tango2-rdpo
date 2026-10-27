@@ -1,0 +1,72 @@
+{
+  "started_at_unix": 1793072524.4661899,
+  "source_git_sha": "7788161c22c1f63c192251f59234cae810d78f38",
+  "sft_adapter_sha256": "9f72839273d9c2382a86d6885096577501ddf31edc6e4b65b2c3c506aa59e13e",
+  "branches": {
+    "baseline": {
+      "started_at_unix": 1793072524.5572665,
+      "state": "completed",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.train",
+        "--config",
+        "configs/dpo_baseline.yaml",
+        "--init",
+        "runs/sft/final",
+        "--output-dir",
+        "runs/baseline"
+      ],
+      "exit_code": 0,
+      "ended_at_unix": 1793076074.9747632,
+      "updates": 2500,
+      "training_elapsed_s": 3521.51,
+      "peak_vram_gb": 4.552,
+      "adapter_sha256": "3fafae7c6e53af165dbc3270e597144fef9edf8db56f40856820d18f44b25378"
+    },
+    "regularized": {
+      "started_at_unix": 1793076075.2192423,
+      "state": "completed",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.train",
+        "--config",
+        "configs/dpo_regularized.yaml",
+        "--init",
+        "runs/sft/final",
+        "--output-dir",
+        "runs/regularized"
+      ],
+      "exit_code": 0,
+      "ended_at_unix": 1793079370.6093264,
+      "updates": 2500,
+      "training_elapsed_s": 3258.1,
+      "peak_vram_gb": 4.552,
+      "adapter_sha256": "6d65b882d2210afbe9d3b7fb62c0a8b273cc2bca57a064249a162879a3ef7eb0"
+    },
+    "ablation": {
+      "started_at_unix": 1793079370.8993251,
+      "state": "completed",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.train",
+        "--config",
+        "configs/dpo_ablation.yaml",
+        "--init",
+        "runs/sft/final",
+        "--output-dir",
+        "runs/ablation"
+      ],
+      "exit_code": 0,
+      "ended_at_unix": 1793082681.1128085,
+      "updates": 2500,
+      "training_elapsed_s": 3280.93,
+      "peak_vram_gb": 4.552,
+      "adapter_sha256": "14bc49680258530b777a4f974c0fa11d32116beadc9a60ad75db5097d43e4508"
+    }
+  },
+  "ended_at_unix": 1793082681.294128,
+  "state": "completed"
+}

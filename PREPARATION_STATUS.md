@@ -29,8 +29,12 @@
 - 100 步 SFT 用时 119.68 秒、峰值显存 2.738 GiB；100 步 DPO 候选用时约 127–131 秒、峰值显存 4.552 GiB。基座生成两段 10.242 秒、16 kHz 单声道且非静音的 WAV。
 - 用相同 64 对验证样本、每对 3 组固定噪声选参：DPO 学习率 `5e-5` 优于 `1e-5` 的偏好代理指标；在 `5e-5` 下，`λ=0/0.1/0.3` 的劣选拟合风险比例为 0.516/0.172/0.094。非零约束同时使较好音频代理误差略升；选择较弱的 0.1 作为主改进，0.3 作消融，真实音质仍待听评。
 
-## 下一步：正式训练
+## 正式训练与机制诊断（2026-10-27）
 
-推荐档预算已在 [`experiment_registry.json`](experiment_registry.json) 冻结：5000 对、共同 SFT 1 轮、B/I/A 各 2 轮。预计纯训练约 3.09 GPU 小时，不含模型加载、验证、生成和听评；尚缺租机单价，不能换算费用。精确命令见 [`README.md`](README.md)。
+推荐档预算已在 [`experiment_registry.json`](experiment_registry.json) 冻结：5000 对、共同 SFT 1 轮、B/I/A 各 2 轮。四组均完成锁定步数，实际日志内纯训练 3.23 GPU 小时；按用户提供的 2 元/小时单价约 6.46 元，不含模型加载、验证、生成和探针。三条 DPO 分支均从同一 SFT adapter 出发，峰值显存均为 4.552 GiB；检查点哈希与日志见 [`reports/metrics/formal_branches_status.json`](reports/metrics/formal_branches_status.json)。
+
+固定 200 个测试偏好对、每对三组噪声的诊断显示，B/I/A 的劣选拟合代理风险分别为 22.67%/5.00%/3.50%。I 相对 B 的风险下降 17.67 个百分点，提示词级 95% bootstrap 区间为下降 14.33–21.00 个百分点；较好音频去噪误差同时增加 0.00212。详见 [`reports/metrics/dpo_test200_comparison.json`](reports/metrics/dpo_test200_comparison.json)。这属于机制代理结果，不能代替生成质量或盲听结论。
+
+统一测试音频正在按冻结的 200 提示、五组模型、每组一个共同种子、200 扩散步生成；匿名盲听尚未开始。评估配置见 [`evaluation_protocol.json`](evaluation_protocol.json)。
 
 保留大于 100 GiB 的持久盘空余，并确保代码、模型、训练输出都在上述持久盘路径。当前模型与数据快照及预处理音频均已在持久盘，无需重新下载。
