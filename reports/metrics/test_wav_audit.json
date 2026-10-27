@@ -1,0 +1,11 @@
+{
+  "count": 1000,
+  "silent_count_rms_below_1e-4": 0,
+  "near_clip_count_peak_at_least_0p999": 0,
+  "duration_s_min": 10.242,
+  "duration_s_max": 10.242,
+  "rms_min": 0.019329581409692764,
+  "rms_max": 0.1382838636636734,
+  "peak_min": 0.200347900390625,
+  "peak_max": 0.990478515625
+}

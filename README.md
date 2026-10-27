@@ -2,7 +2,7 @@
 
 本仓库研究一个可证伪的问题：Tango 2 的相对 DPO 目标可能让劣选音频的去噪误差低于冻结参考模型。我们在原 DPO 上加一个只对该现象起作用的平方铰链约束，比较共同 SFT 起点后的原版 DPO、改进版和约束强度消融。误差是拟合代理量，不是精确生成概率。正式效果要靠保留提示词的匿名盲听判断。
 
-**状态：共同 SFT 与 B/I/A 三组正式训练、固定测试集机制诊断已完成；统一音频生成与人耳盲听尚未完成。** 正式预算与配置见 [`experiment_registry.json`](experiment_registry.json)，测试协议见 [`evaluation_protocol.json`](evaluation_protocol.json)。机制指标不能代替生成音质或真实听评。
+**状态：共同 SFT、B/I/A 三组正式训练、固定测试集机制诊断、统一音频生成和匿名盲听材料均已完成；等待真实听评。** 正式预算与配置见 [`experiment_registry.json`](experiment_registry.json)，测试协议见 [`evaluation_protocol.json`](evaluation_protocol.json)。机制指标不能代替生成音质或真实听评。
 
 ## 来源和许可
 
@@ -91,18 +91,21 @@ python -m tango2_rdpo.diagnose --config configs/dpo_regularized.yaml \
   --output outputs/metrics/regularized_val.json
 ```
 
-选定最终检查点后，统一提示、种子和 200 步生成，准备匿名盲听表：
+按锁定协议完成测试集 200 个提示 × P/S/B/I/A 五组模型，共 1000 条 WAV；挑战集 40 个提示 × B/I 两组，共 80 条 WAV。所有文件均为 10.242 秒；[测试集审计](reports/metrics/test_wav_audit.json)和[挑战集审计](reports/metrics/challenge_wav_audit.json)都记录了 0 条静音、0 条达到 0.999 峰值阈值的近削波文件。100 组测试集匿名配对与 40 组挑战集匿名配对已复制到本地 `outputs/listening_test/participant/` 和 `outputs/listening_challenge/participant/`；音频及私有答案键不上传 GitHub。听评说明见[听评指南](reports/listening_instructions.md)。后处理状态见[运行记录](reports/metrics/posttrain_status.json)。
+
+选定最终检查点后，使用统一提示、种子 1200 和 200 步生成，复现匿名盲听表的命令为：
 
 ```bash
 python -m tango2_rdpo.generate --config configs/eval.yaml \
-  --prompt-manifest data/processed/manifests/eval_prompts.jsonl --output-dir outputs/wav
+  --prompt-manifest data/processed/manifests/eval_prompts.jsonl --output-dir outputs/test_wav
 python -m tango2_rdpo.blind_listening \
-  --generation-manifest outputs/wav/generation_manifest.jsonl --output-dir outputs/listening
-python -m tango2_rdpo.evaluate --ratings outputs/listening/ratings_filled.csv \
-  --answer-key outputs/listening/private/answer_key.json \
+  --generation-manifest outputs/test_wav/generation_manifest.jsonl \
+  --output-dir outputs/listening_test --count 100
+python -m tango2_rdpo.evaluate --ratings outputs/listening_test/ratings_filled.csv \
+  --answer-key outputs/listening_test/private/answer_key.json \
   --output outputs/metrics/blind_listening.json
 ```
 
 盲听表 `participant/ratings_template.csv` 的 `alignment_choice` 和 `naturalness_choice` 分别填 `L`、`R` 或 `T`；原始填写表须保留，`private/answer_key.json` 不分发评审者。听评者至少 3 人、100 对固定 B/I 配对；按提示词 bootstrap 给出 95% 区间。若区间包含 0.5，只能报告证据不足。
 
-完整实验设计见上层课程项目的执行计划书。计算成本要用 100 步探针实测吞吐后估算。训练脚本会在 CUDA 不可用时拒绝运行，避免无卡模式误开始训练。
+完整实验设计见上层课程项目的执行计划书。[GPU 时间与费用记录](reports/metrics/gpu_cost_estimate.json)：正式训练日志 3.23 小时约 6.46 元，后处理实际运行窗口 2.94 小时约 5.89 元，两项合计约 12.35 元；实例从系统启动到后处理完成约 8.04 小时，对应约 16.07 元。系统启动时间不是平台计费起点，实例仍在运行时费用继续增加，实际账单须以平台记录为准。训练脚本会在 CUDA 不可用时拒绝运行，避免无卡模式误开始训练。

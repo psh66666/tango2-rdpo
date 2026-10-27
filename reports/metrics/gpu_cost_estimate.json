@@ -1,0 +1,15 @@
+{
+  "currency": "CNY",
+  "hourly_price": 2.0,
+  "measurement": "Recorded training_elapsed_s plus posttrain wall time; separate server uptime estimate, not provider invoice.",
+  "formal_training_seconds": 11634.07,
+  "formal_training_cost_cny": 6.46,
+  "posttrain_active_window_seconds": 10601.01,
+  "posttrain_active_window_cost_cny": 5.89,
+  "tracked_formal_plus_posttrain_cost_cny": 12.35,
+  "instance_boot_time_cst": "2026-10-27T09:26:07+08:00",
+  "posttrain_end_time_cst": "2026-10-27T17:28:21.072647+08:00",
+  "boot_to_posttrain_end_seconds": 28934.07,
+  "boot_to_posttrain_end_cost_cny": 16.07,
+  "caveat": "Boot time is not billing start; pilot work and all idle intervals are included in boot-window estimate, while compute continues to incur cost after this endpoint until instance rental is stopped. Provider bill unavailable."
+}

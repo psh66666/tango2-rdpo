@@ -1,0 +1,292 @@
+{
+  "state": "completed_pending_human_ratings",
+  "started_at_unix": 1793073155.4641323,
+  "steps": [
+    {
+      "name": "diagnose_baseline_val64",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.diagnose",
+        "--config",
+        "configs/dpo_baseline.yaml",
+        "--manifest",
+        "data/processed/manifests/val.jsonl",
+        "--adapter",
+        "runs/baseline/final",
+        "--limit",
+        "64",
+        "--output",
+        "outputs/metrics/baseline_val64.json"
+      ],
+      "started_at_unix": 1793082700.0622728,
+      "state": "completed",
+      "ended_at_unix": 1793082753.1260903,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_diagnose_baseline_val64.log"
+    },
+    {
+      "name": "diagnose_regularized_val64",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.diagnose",
+        "--config",
+        "configs/dpo_regularized.yaml",
+        "--manifest",
+        "data/processed/manifests/val.jsonl",
+        "--adapter",
+        "runs/regularized/final",
+        "--limit",
+        "64",
+        "--output",
+        "outputs/metrics/regularized_val64.json"
+      ],
+      "started_at_unix": 1793082753.20133,
+      "state": "completed",
+      "ended_at_unix": 1793082802.2499058,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_diagnose_regularized_val64.log"
+    },
+    {
+      "name": "diagnose_ablation_val64",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.diagnose",
+        "--config",
+        "configs/dpo_ablation.yaml",
+        "--manifest",
+        "data/processed/manifests/val.jsonl",
+        "--adapter",
+        "runs/ablation/final",
+        "--limit",
+        "64",
+        "--output",
+        "outputs/metrics/ablation_val64.json"
+      ],
+      "started_at_unix": 1793082802.386511,
+      "state": "completed",
+      "ended_at_unix": 1793082851.8770163,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_diagnose_ablation_val64.log"
+    },
+    {
+      "name": "compare_val64",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "/tmp/tango2_compare_diagnostics.py",
+        "--baseline",
+        "outputs/metrics/baseline_val64.json",
+        "--regularized",
+        "outputs/metrics/regularized_val64.json",
+        "--ablation",
+        "outputs/metrics/ablation_val64.json",
+        "--output",
+        "outputs/metrics/dpo_val64_comparison.json"
+      ],
+      "started_at_unix": 1793082851.9032576,
+      "state": "completed",
+      "ended_at_unix": 1793082852.8105571,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_compare_val64.log"
+    },
+    {
+      "name": "diagnose_baseline_test200",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.diagnose",
+        "--config",
+        "configs/dpo_baseline.yaml",
+        "--manifest",
+        "data/processed/manifests/test.jsonl",
+        "--adapter",
+        "runs/baseline/final",
+        "--limit",
+        "200",
+        "--output",
+        "outputs/metrics/baseline_test200.json"
+      ],
+      "started_at_unix": 1793082852.837635,
+      "state": "completed",
+      "ended_at_unix": 1793082958.1338234,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_diagnose_baseline_test200.log"
+    },
+    {
+      "name": "diagnose_regularized_test200",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.diagnose",
+        "--config",
+        "configs/dpo_regularized.yaml",
+        "--manifest",
+        "data/processed/manifests/test.jsonl",
+        "--adapter",
+        "runs/regularized/final",
+        "--limit",
+        "200",
+        "--output",
+        "outputs/metrics/regularized_test200.json"
+      ],
+      "started_at_unix": 1793082958.1641707,
+      "state": "completed",
+      "ended_at_unix": 1793083051.3049304,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_diagnose_regularized_test200.log"
+    },
+    {
+      "name": "diagnose_ablation_test200",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.diagnose",
+        "--config",
+        "configs/dpo_ablation.yaml",
+        "--manifest",
+        "data/processed/manifests/test.jsonl",
+        "--adapter",
+        "runs/ablation/final",
+        "--limit",
+        "200",
+        "--output",
+        "outputs/metrics/ablation_test200.json"
+      ],
+      "started_at_unix": 1793083051.3835013,
+      "state": "completed",
+      "ended_at_unix": 1793083146.570084,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_diagnose_ablation_test200.log"
+    },
+    {
+      "name": "compare_test200",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "/tmp/tango2_compare_diagnostics.py",
+        "--baseline",
+        "outputs/metrics/baseline_test200.json",
+        "--regularized",
+        "outputs/metrics/regularized_test200.json",
+        "--ablation",
+        "outputs/metrics/ablation_test200.json",
+        "--output",
+        "outputs/metrics/dpo_test200_comparison.json"
+      ],
+      "started_at_unix": 1793083146.5920572,
+      "state": "completed",
+      "ended_at_unix": 1793083148.9897835,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_compare_test200.log"
+    },
+    {
+      "name": "generate_test",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.generate",
+        "--config",
+        "/tmp/tango2_eval.yaml",
+        "--prompt-manifest",
+        "data/processed/manifests/eval_prompts.jsonl",
+        "--output-dir",
+        "outputs/test_wav"
+      ],
+      "started_at_unix": 1793083149.0114875,
+      "state": "completed",
+      "ended_at_unix": 1793092427.760717,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_generate_test.log"
+    },
+    {
+      "name": "audit_test_wav",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "/tmp/tango2_audit_wav.py",
+        "outputs/test_wav/generation_manifest.jsonl",
+        "outputs/metrics/test_wav_audit.json",
+        "1000"
+      ],
+      "started_at_unix": 1793092427.8577602,
+      "state": "completed",
+      "ended_at_unix": 1793092434.7023299,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_audit_test_wav.log"
+    },
+    {
+      "name": "blind_test",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "/tmp/tango2_blind_listening.py",
+        "--generation-manifest",
+        "outputs/test_wav/generation_manifest.jsonl",
+        "--output-dir",
+        "outputs/listening_test",
+        "--count",
+        "100"
+      ],
+      "started_at_unix": 1793092434.7306705,
+      "state": "completed",
+      "ended_at_unix": 1793092440.4352517,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_blind_test.log"
+    },
+    {
+      "name": "generate_challenge",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "-m",
+        "tango2_rdpo.generate",
+        "--config",
+        "/tmp/tango2_eval.yaml",
+        "--prompt-manifest",
+        "evaluation/challenge_prompts.jsonl",
+        "--output-dir",
+        "outputs/challenge_wav",
+        "--models",
+        "baseline",
+        "regularized"
+      ],
+      "started_at_unix": 1793092440.4474497,
+      "state": "completed",
+      "ended_at_unix": 1793093294.6074426,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_generate_challenge.log"
+    },
+    {
+      "name": "audit_challenge_wav",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "/tmp/tango2_audit_wav.py",
+        "outputs/challenge_wav/generation_manifest.jsonl",
+        "outputs/metrics/challenge_wav_audit.json",
+        "80"
+      ],
+      "started_at_unix": 1793093294.6449301,
+      "state": "completed",
+      "ended_at_unix": 1793093295.1670632,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_audit_challenge_wav.log"
+    },
+    {
+      "name": "blind_challenge",
+      "command": [
+        "/root/tango2-rdpo-env/bin/python",
+        "/tmp/tango2_blind_listening.py",
+        "--generation-manifest",
+        "outputs/challenge_wav/generation_manifest.jsonl",
+        "--output-dir",
+        "outputs/listening_challenge",
+        "--count",
+        "40"
+      ],
+      "started_at_unix": 1793093295.1846914,
+      "state": "completed",
+      "ended_at_unix": 1793093300.9981804,
+      "exit_code": 0,
+      "log": "/root/onethingai-fs/projects/tango2-rdpo/outputs/posttrain_blind_challenge.log"
+    }
+  ],
+  "ended_at_unix": 1793093301.0726469
+}
