@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
+import inspect
 import json
 import sys
 from dataclasses import dataclass
@@ -21,7 +22,26 @@ class Components:
     reference_unet: torch.nn.Module | None
 
 
+def _align_librosa_pad_center() -> None:
+    import librosa.util
+
+    current = librosa.util.pad_center
+    if getattr(current, "_tango_legacy_call", False):
+        return
+    size = inspect.signature(current).parameters["size"]
+    if size.kind is not inspect.Parameter.KEYWORD_ONLY:
+        return
+
+    # Pinned Tango passes size positionally, while Librosa 0.9+ requires size=.
+    def pad_center(data, size, **kwargs):
+        return current(data, size=size, **kwargs)
+
+    pad_center._tango_legacy_call = True
+    librosa.util.pad_center = pad_center
+
+
 def _upstream_module(upstream_root: Path):
+    _align_librosa_pad_center()
     root = upstream_root.resolve()
     source = root / "models.py"
     if not source.is_file():

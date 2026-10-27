@@ -12,6 +12,13 @@
 
 远端持久盘根目录：`/root/onethingai-fs/projects/tango2-rdpo`。脚本、`models/`、`data/`、`runs/`、`outputs/` 均放这里；T5 缓存在同一持久盘的 `/root/onethingai-fs/cache/huggingface/hub`。`upstream/tango` 固定到 `34ecd38898508017ca937508a047b42817d2b070`。现有 Python 3.11 环境在 `/root/miniconda3/envs/loopscape-py311`，实际软件版本见 [`environment.lock`](environment.lock)。环境本身可能随实例重建，持久盘中的数据与代码不会依赖实例临时目录。
 
+GPU 探针使用独立环境 `/root/tango2-rdpo-env`，继承现有 CUDA/PyTorch 环境，只覆盖与固定 Tango 源码不兼容的依赖；精确版本见 [`environment.lock`](environment.lock)。实例重建时执行：
+
+```bash
+/root/miniconda3/envs/loopscape-py311/bin/python -m venv --system-site-packages /root/tango2-rdpo-env
+/root/tango2-rdpo-env/bin/python -m pip install --no-deps diffusers==0.18.2 huggingface-hub==0.25.2 librosa==0.9.2
+```
+
 服务器无法直接连 Hugging Face 页面时，在可访问的本机生成短时效文件地址，再将 `data/*download-plan.json` 传到远端同名目录；远端可直连文件 CDN。下载器对 LFS 文件按来源 SHA-256 核验并支持断点续传。下载计划含临时签名地址，文件权限为 `0600`，不要提交或公开：
 
 ```bash
@@ -58,7 +65,7 @@ python scripts/download_snapshot.py tango-base --output-root models \
 
 ```bash
 cd /root/onethingai-fs/projects/tango2-rdpo
-export PATH=/root/miniconda3/envs/loopscape-py311/bin:$PATH
+export PATH=/root/tango2-rdpo-env/bin:$PATH
 python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 2 --output-dir runs/probe_sft_2
 python -m tango2_rdpo.train --config configs/dpo_baseline.yaml --init runs/probe_sft_2/final --max-updates 2 --output-dir runs/probe_dpo_2
 python -m tango2_rdpo.train --config configs/sft.yaml --max-updates 100 --output-dir runs/probe_sft_100
