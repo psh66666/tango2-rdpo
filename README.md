@@ -2,7 +2,7 @@
 
 本仓库研究一个可证伪的问题：Tango 2 的相对 DPO 目标可能让劣选音频的去噪误差低于冻结参考模型。我们在原 DPO 上加一个只对该现象起作用的平方铰链约束，比较共同 SFT 起点后的原版 DPO、改进版和约束强度消融。误差是拟合代理量，不是精确生成概率。正式效果要靠保留提示词的匿名盲听判断。
 
-**状态：GPU 环境预检完成，尚未运行训练探针。** 数据、模型、脚本和环境已锁定；所有超参数仍是探针起点，没有训练结果。
+**状态：GPU 探针与验证集选参完成，正式训练尚未开始。** 正式预算与配置冻结在 [`experiment_registry.json`](experiment_registry.json)；目前的指标只来自小规模探针，不代表最终生成质量。
 
 ## 来源和许可
 
@@ -61,7 +61,7 @@ python scripts/download_snapshot.py tango-base --output-root models \
 
 ## 开卡后的实验顺序
 
-2026-10-27 已确认 RTX 4090 24 GiB 可见、bf16 可用、持久盘已挂载且剩余约 190 GiB；配置路径与调度器字段通过静态检查。**尚未加载模型或实测训练显存和速度。**先跑 2 步再跑 100 步探针，确定 bf16、LoRA 和训练预算。以下全部在远端项目根目录，并使用锁定的 Python 环境运行：
+2026-10-27 已在 RTX 4090 24 GiB 上完成 SFT/DPO 的 2 步及 100 步探针；SFT 与 DPO 峰值显存分别约 2.74/4.55 GiB。100 步有效训练时间约 120/127 秒。基座模型已生成两段 10.242 秒 WAV，均可解码且非静音。以下全部在远端项目根目录，并使用锁定的 Python 环境运行：
 
 ```bash
 cd /root/onethingai-fs/projects/tango2-rdpo
@@ -76,7 +76,7 @@ python -m tango2_rdpo.train --config configs/dpo_regularized.yaml --init runs/sf
 python -m tango2_rdpo.train --config configs/dpo_ablation.yaml --init runs/sft/final --output-dir runs/ablation
 ```
 
-正式训练前必须先用共同的训练集小试和验证集诊断锁定学习率、`λ`、更新数，并在 `experiment_registry.json` 留档。B/I/A 从同一 `runs/sft/final` adapter 出发；`lambda_reject` 分别为 0、候选值和另一非零值；其余训练字段保持一致。配置内当前的 `5000` 条、`β=2000`、rank 8、学习率 `1e-5`、`λ=0.3/1.0` 均未经过 GPU 验证。
+正式训练采用已锁定的 5000 对：SFT 学习率 `1e-5`、1 轮；B/I/A 的 DPO 学习率均为 `5e-5`、2 轮，`lambda_reject` 分别为 0、0.1、0.3。其余 DPO 字段相同，均从同一 `runs/sft/final` adapter 出发。选参只用了固定验证子集，未使用测试集；选择依据和较好音频代理量的取舍见 [实验注册表](experiment_registry.json)。最终效果仍需匿名盲听。
 
 固定验证或测试偏好对的机制检查：
 

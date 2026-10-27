@@ -1,0 +1,84 @@
+{
+  "status": "locked_before_formal_training",
+  "locked_date": "2026-10-27",
+  "decision_base_commit": "ac10dbe029ea726686ac950d85a0537292f603ee",
+  "gpu": "NVIDIA GeForce RTX 4090 24 GiB",
+  "data": {
+    "train_manifest_sha256": "2b2a0f44abde4afe8c0d7a77b1b41f87095598171622368de0168ce1d300f314",
+    "validation_manifest_sha256": "754671575658f7d814ab1005b2814faca400a1845850458cd957bee72dd1604d",
+    "selected_train_pairs": 5000,
+    "selected_ids_sha256": "6ee7401c46fdf9b8c9544d723525374b6d3033c4569e46025c2c1829cbae5adc",
+    "selection_seed": 20261023,
+    "validation_pairs_for_tuning": 64,
+    "validation_noise_seeds": [
+      1101,
+      2202,
+      3303
+    ],
+    "test_set_used_for_selection": false
+  },
+  "training": {
+    "effective_batch": 4,
+    "precision": "bf16",
+    "sft_epochs": 1,
+    "dpo_epochs_per_branch": 2,
+    "sft_updates": 1250,
+    "dpo_updates_per_branch": 2500,
+    "shared_sft_checkpoint": "runs/sft/final",
+    "branches_from_same_sft": [
+      "baseline",
+      "regularized",
+      "ablation"
+    ],
+    "configs": {
+      "sft": {
+        "path": "configs/sft.yaml",
+        "sha256": "69b735ec007b7cb718e4962012a306bd2b6e124c004c2e3ea73fa1f2e39a8944"
+      },
+      "dpo_baseline": {
+        "path": "configs/dpo_baseline.yaml",
+        "sha256": "8a3e4b3787455f03815104546232bb5a4b02a6c2ee3b774c05a91b74486ca9cd"
+      },
+      "dpo_regularized": {
+        "path": "configs/dpo_regularized.yaml",
+        "sha256": "62e52d65ab53c86a1dbd31be6b6ac394f00679a5339c22f9527e8084fc7015da"
+      },
+      "dpo_ablation": {
+        "path": "configs/dpo_ablation.yaml",
+        "sha256": "b4e73003eeb0986576fde0b729f478bb8d857c09eae76d721a541fdfab00a4de"
+      }
+    }
+  },
+  "selection": {
+    "sft_learning_rate": 1e-05,
+    "dpo_learning_rate": 5e-05,
+    "lambda_regularized": 0.1,
+    "lambda_ablation": 0.3,
+    "reason": "On a fixed 64-pair validation subset, DPO learning rate 5e-5 improved preference diagnostics over 1e-5. Lambda 0.1 reduced rejected-fit proxy risk with less chosen-error increase than lambda 0.3. Neither proxy result establishes audio quality; blind listening remains decisive.",
+    "pilot_validation": {
+      "baseline": {
+        "preference_correct": 0.640625,
+        "rejected_fit_risk": 0.515625,
+        "chosen_delta": -6.97777916987737e-05
+      },
+      "regularized_0p1": {
+        "preference_correct": 0.6197916666666666,
+        "rejected_fit_risk": 0.171875,
+        "chosen_delta": 0.00012671047200759253
+      },
+      "ablation_0p3": {
+        "preference_correct": 0.6145833333333334,
+        "rejected_fit_risk": 0.09375,
+        "chosen_delta": 0.00022116055091222128
+      }
+    }
+  },
+  "budget": {
+    "sft_probe_seconds_per_update": 1.1968,
+    "baseline_probe_seconds_per_update": 1.2695,
+    "regularized_probe_seconds_per_update": 1.2683,
+    "ablation_probe_seconds_per_update": 1.3124,
+    "estimated_training_gpu_hours_excluding_loading_validation_and_generation": 3.09,
+    "gpu_hourly_price": null
+  }
+}
