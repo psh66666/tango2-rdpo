@@ -189,6 +189,8 @@ def main() -> None:
         original = json.loads(run_path.read_text())
         if original["config"] != config or original["selected_ids_sha256"] != selected_hash:
             raise ValueError("resume run metadata mismatch")
+        if original["source_git_sha"] != source_sha:
+            raise ValueError("resume requires the same source commit")
     else:
         if run_path.exists():
             raise FileExistsError(f"run metadata already exists: {run_path}")
@@ -202,7 +204,10 @@ def main() -> None:
         with_reference=(stage == "dpo"),
     )
     place_on_device(components, device, dtype)
-    adapter_dir = (args.output_dir / "last" / "adapter") if args.resume else (
+    resume_dir = args.output_dir / "last"
+    if args.resume and not resume_dir.exists():
+        resume_dir = args.output_dir / "final"
+    adapter_dir = (resume_dir / "adapter") if args.resume else (
         args.init / "adapter" if args.init is not None else None
     )
     attach_lora(
@@ -226,7 +231,7 @@ def main() -> None:
     )
     start_epoch = start_position = updates = 0
     if args.resume:
-        state = torch.load(args.output_dir / "last" / "state.pt", map_location="cpu", weights_only=False)
+        state = torch.load(resume_dir / "state.pt", map_location="cpu", weights_only=False)
         if state["selected_hash"] != selected_hash:
             raise ValueError("resume data selection mismatch")
         if state["config_hash"] != config_hash:
@@ -236,6 +241,7 @@ def main() -> None:
         start_epoch, start_position, updates = state["epoch"], state["next_position"], state["updates"]
     optimizer.zero_grad(set_to_none=True)
     accum_count = 0
+    accumulated_metrics: dict[str, float] = {}
     started = time.monotonic()
     log_path = args.output_dir / "train.jsonl"
     for epoch in range(start_epoch, epochs):
@@ -253,8 +259,12 @@ def main() -> None:
             )
             if not torch.isfinite(loss):
                 raise FloatingPointError(f"non-finite loss at {row['id']}")
-            (loss / accum).backward()
+            group_size = min(accum, len(order) - (position - accum_count))
+            (loss / group_size).backward()
             accum_count += 1
+            accumulated_metrics["loss"] = accumulated_metrics.get("loss", 0.0) + loss.detach().item()
+            for key, value in metrics.items():
+                accumulated_metrics[key] = accumulated_metrics.get(key, 0.0) + float(value)
             if accum_count < accum and position + 1 != len(order):
                 continue
             grad_norm = torch.nn.utils.clip_grad_norm_(trainable, float(config["max_grad_norm"]))
@@ -262,13 +272,16 @@ def main() -> None:
             scheduler.step()
             optimizer.zero_grad(set_to_none=True)
             updates += 1
+            effective_count = accum_count
             accum_count = 0
             record = {
-                "epoch": epoch, "position": position, "update": updates, "loss": loss.detach().item(),
+                "epoch": epoch, "position": position, "update": updates,
                 "grad_norm": float(grad_norm), "lr": scheduler.get_last_lr()[0],
                 "elapsed_s": round(time.monotonic() - started, 2),
-                "peak_vram_gb": round(torch.cuda.max_memory_allocated() / 2**30, 3), **metrics,
+                "peak_vram_gb": round(torch.cuda.max_memory_allocated() / 2**30, 3),
+                **{key: value / effective_count for key, value in accumulated_metrics.items()},
             }
+            accumulated_metrics.clear()
             with log_path.open("a") as stream:
                 stream.write(json.dumps(record) + "\n")
             if updates % int(config["checkpoint_every"]) == 0:
