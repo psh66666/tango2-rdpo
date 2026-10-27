@@ -60,6 +60,8 @@ def main() -> None:
                 with_reference=False,
             )
             place_on_device(components, device, dtype)
+            # The upstream vocoder converts its output to NumPy, which cannot read bf16.
+            components.vae.to(dtype=torch.float32)
             if adapter is not None:
                 components.model.unet = PeftModel.from_pretrained(
                     components.model.unet, Path(adapter) / "adapter", is_trainable=False
@@ -87,7 +89,7 @@ def main() -> None:
                             guidance_scale=float(config["guidance"]),
                             disable_progress=True,
                         )
-                        mel = components.vae.decode_first_stage(latents)
+                        mel = components.vae.decode_first_stage(latents.float())
                         waveform = components.vae.decode_to_waveform(mel)[0]
                     path.parent.mkdir(parents=True, exist_ok=True)
                     sf.write(path, waveform, samplerate=16000, subtype="PCM_16")
